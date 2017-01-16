@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<vibrate>
+    <element>
+        <id>1</id>
+        <action>happy</action>
+    </element>
+    <element>
+        <id>2</id>
+        <action>stupid</action>
+    </element>
+    <element>
+        <id>3</id>
+        <action>lame</action>
+    </element>
+</vibrate>
