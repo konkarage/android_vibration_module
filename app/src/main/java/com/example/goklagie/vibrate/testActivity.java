@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 
 public class testActivity extends AppCompatActivity {
 
@@ -22,9 +23,15 @@ public class testActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        StringBuffer sb = new StringBuffer();
         Resources res = getApplicationContext().getResources();
         XmlResourceParser xpp = res.getXml(R.xml.vibrations);
+        HashMap<String, String> elementList = new HashMap<String, String>();
+        String currentTag = new String();
+        String currentValue = new String();
+        String currentId = new String();
+        String currentAction = new String();
+        boolean newId = false;
+        boolean newAction = false;
 
         try {
             xpp.next();
@@ -41,16 +48,34 @@ public class testActivity extends AppCompatActivity {
         }
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if(eventType == XmlPullParser.START_DOCUMENT) {
-                sb.append("******Start document");
+                Log.d(TAG,"Importing vibration preferences");
             }
             else if(eventType == XmlPullParser.START_TAG)  {
-                sb.append("\nStart tag " + xpp.getName());
+                currentTag = xpp.getName();
+                if (currentTag.equals("id") && !newId) {
+                    newId = true;
+                }
+                if (currentTag.equals("action") && !newAction) {
+                    newAction = true;
+                }
             }
             else if(eventType == XmlPullParser.END_TAG) {
-                sb.append("\nEnd tag " + xpp.getName());
+                currentTag = xpp.getName();
+                if (currentTag.equals("element") && newId && newAction) {
+                    Log.d(TAG,"Id: " + currentId + " Action: " + currentAction);
+                    elementList.put(currentId, currentAction);
+                    newId = false;
+                    newAction = false;
+                }
             }
             else if(eventType == XmlPullParser.TEXT) {
-                sb.append("\nText " + xpp.getText());
+                currentValue = xpp.getText();
+                if (currentTag.equals("id") && newId) {
+                    currentId = currentValue;
+                }
+                if (currentTag.equals("action") && newAction) {
+                    currentAction = currentValue;
+                }
             }
             try {
                 eventType = xpp.next();
@@ -60,43 +85,21 @@ public class testActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }//eof-while
-        sb.append("\n******End document");
+        Log.d(TAG,"Successfully imported vibration preferences");
+    }
 
-        Log.d(TAG, sb.toString());
+    // Get instance of Vibrator from current Context
+    //Vibrator v = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
 
-//        XmlResourceParser parser = getResources().getXml(R.xml.vibrations);
-//
-//        try {
-//            int f = 0;
-//            while (parser.next() != XmlPullParser.END_DOCUMENT) {
-//                Log.d(TAG, "d: " + f);
-//f++;
-//                if (parser.getEventType() == XmlPullParser.START_TAG && parser.getName().equals("element")) {
-//                    String s;
-//
-//                    for (int i = 0; i < parser.getAttributeCount(); i++) {
-//                        Log.d(TAG, "ind: " + i);
-//                        if (parser.getAttributeName(i).equals("element"))
-//                            Log.d(TAG,getResources().getString(parser.getAttributeResourceValue(i, -1)));
-//                    }
-//                }
-//
-//            }
-        }
+    // Start without a delay
+    // Vibrate for 100 milliseconds
+    // Sleep for 1000 milliseconds
+    //long[] pattern = {0, 100, 1000};
 
-
-        // Get instance of Vibrator from current Context
-        //Vibrator v = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
-
-        // Start without a delay
-        // Vibrate for 100 milliseconds
-        // Sleep for 1000 milliseconds
-        //long[] pattern = {0, 100, 1000};
-
-        // The '0' here means to repeat indefinitely
-        // '0' is actually the index at which the pattern keeps repeating from (the start)
-        // To repeat the pattern from any other point, you could increase the index, e.g. '1'
-        //v.vibrate(pattern, 0);
+    // The '0' here means to repeat indefinitely
+    // '0' is actually the index at which the pattern keeps repeating from (the start)
+    // To repeat the pattern from any other point, you could increase the index, e.g. '1'
+    //v.vibrate(pattern, 0);
 
     private static final String TAG = testActivity.class.getSimpleName();
     @Override
