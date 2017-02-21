@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<vibrate xmlns:android="http://schemas.android.com/tools">
+    <element>
+        <id>button1</id>
+        <action>100</action>
+    </element>
+    <element>
+        <id>button2</id>
+        <action>200</action>
+    </element>
+    <element>
+        <id>button3</id>
+        <action>600</action>
+    </element>
+    <element>
+        <id>button4</id>
+        <action>1200</action>
+    </element>
+</vibrate>
